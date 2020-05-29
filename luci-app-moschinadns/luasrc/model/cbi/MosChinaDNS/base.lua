@@ -53,7 +53,7 @@ o.template = "MosChinaDNS/MosChinaDNS_check"
 o.showfastconfig=(not fs.access(configpath))
 o.description=string.format(translate("core version:").."<strong><font id=\"updateversion\" color=\"green\">%s </font></strong>",e)
 ---- port warning not safe
-local port=luci.sys.exec("awk -F: '$1 ~ /  addr/{gsub(/[ \t]+/,"",$3);print substr($3,1,length($3)-1);exit;}' "..configpath.." 2>nul")
+local port=luci.sys.exec("awk -F: '$1 ~ /  addr/{gsub(/[ \t]+/,\"\",$3);print substr($3,1,length($3)-1);exit;}' "..configpath.." 2>nul")
 if (port=="") then port="?" end
 ---- Redirect
 o = s:option(ListValue, "redirect", port..translate("Redirect"), translate("MosChinaDNS redirect mode"))
