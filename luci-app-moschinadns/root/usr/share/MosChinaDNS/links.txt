@@ -1,0 +1,1 @@
+https://github.com/IrineSistiana/mos-chinadns/releases/download/${latest_ver}/mos-chinadns-linux-${Arch}-softfloat.zip

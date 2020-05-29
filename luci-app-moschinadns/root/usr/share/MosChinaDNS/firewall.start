@@ -1,0 +1,8 @@
+#!/bin/sh
+
+MosChinaDNS_enable=$(uci get MosChinaDNS.MosChinaDNS.enabled)
+redirect=$(uci get MosChinaDNS.MosChinaDNS.redirect)
+
+if [ $MosChinaDNS_enable -eq 1 -a "$redirect" == "redirect" ]; then
+	/etc/init.d/MosChinaDNS do_redirect 1
+fi

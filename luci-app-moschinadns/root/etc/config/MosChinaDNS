@@ -1,0 +1,11 @@
+config MosChinaDNS 'MosChinaDNS'
+	option enabled '0'
+	option httpport '3000'
+	option redirect 'none'
+	option configpath '/etc/config/MosChinaDNS.yaml'
+	option workdir '/usr/bin/MosChinaDNS'
+	option logfile '/tmp/MosChinaDNS.log'
+	option verbose '0'
+	option binpath '/usr/bin/MosChinaDNS/MosChinaDNS'
+	option upxflag ''
+
