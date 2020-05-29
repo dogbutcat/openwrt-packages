@@ -37,9 +37,9 @@ else
 	local version=uci:get("MosChinaDNS","MosChinaDNS","version")
 	local testtime=fs.stat(binpath,"mtime")
 	if testtime~=tonumber(binmtime) or version==nil then
-		-- local tmp=luci.sys.exec(binpath.." -v 2>&1 | grep -m 1 -E 'v[0-9.]+-\w+' -o")
+		-- local tmp=luci.sys.exec(binpath.." -v 2>&1 | grep -m 1 -E 'v[0-9.]+-\\w+' -o")
 		-- version=string.sub(tmp, 1, -9)
-		version=luci.sys.exec(binpath.." -v 2>&1 | grep -m 1 -E 'v[0-9.]+-\w+' -o")
+		version=luci.sys.exec(binpath.." -v 2>&1 | grep -m 1 -E 'v[0-9.]+-\\w+' -o")
 		if version=="" then version=" "..translate("read ver error") end
 		uci:set("MosChinaDNS","MosChinaDNS","version",version)
 		uci:set("MosChinaDNS","MosChinaDNS","binmtime",testtime)
