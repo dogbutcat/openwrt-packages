@@ -186,12 +186,13 @@ doupdate_core(){
 	if [ "${link##*.}" == "zip" ]; then
 		# unzip not tar
 		# tar -zxf "/tmp/MosChinaDNSupdate/${link##*/}" -C "/tmp/MosChinaDNSupdate/"
-		unzip "/tmp/MosChinaDNSupdate/${link##*/}" -d "/tmp/MosChinaDNSupdate/"
-		if [ ! -e "/tmp/MosChinaDNSupdate/mos-chinadns" ]; then
+		unzip "/tmp/MosChinaDNSupdate/${link##*/}" -d "/tmp/MosChinaDNSupdate/MosChinaDNS"
+		if [ ! -e "/tmp/MosChinaDNSupdate/MosChinaDNS/mos-chinadns" ]; then
 			echo -e "Failed to download core."
 			rm -rf "/tmp/MosChinaDNSupdate" >/dev/null 2>&1
 			EXIT 1
 		else
+			chmod +x "/tmp/MosChinaDNSupdate/mos-chinadns"
 			mv "/tmp/MosChinaDNSupdate/mos-chinadns" "/tmp/MosChinaDNSupdate/MosChinaDNS"
 		fi
 		downloadbin="/tmp/MosChinaDNSupdate/MosChinaDNS/MosChinaDNS"
