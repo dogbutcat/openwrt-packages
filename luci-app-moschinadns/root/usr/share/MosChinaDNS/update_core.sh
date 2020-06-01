@@ -192,8 +192,7 @@ doupdate_core(){
 			rm -rf "/tmp/MosChinaDNSupdate" >/dev/null 2>&1
 			EXIT 1
 		else
-			chmod +x "/tmp/MosChinaDNSupdate/mos-chinadns"
-			mv "/tmp/MosChinaDNSupdate/mos-chinadns" "/tmp/MosChinaDNSupdate/MosChinaDNS"
+			mv "/tmp/MosChinaDNSupdate/MosChinaDNS/mos-chinadns" "/tmp/MosChinaDNSupdate/MosChinaDNS/MosChinaDNS"
 		fi
 		downloadbin="/tmp/MosChinaDNSupdate/MosChinaDNS/MosChinaDNS"
 	else
