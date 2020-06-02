@@ -128,3 +128,4 @@ end
 function do_update_list()
 	luci.sys.exec("sh /usr/share/MosChinaDNS/update_list.sh")
 end
+end
