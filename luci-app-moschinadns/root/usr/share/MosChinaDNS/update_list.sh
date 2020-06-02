@@ -16,8 +16,8 @@ update_ip_list(){
     fi
     echo $ipv4 > /tmp/MosChinaDNSupdatelist/temp_chn.list
     echo $ipv6 >> /tmp/MosChinaDNSupdatelist/temp_chn.list
-    if [ ! -f "$workdir" ]; then
-        echo "please make a config first"
+    if [ ! -d "$workdir" ]; then
+        echo $workdir" is missing"
         EXIT 1
     fi
     mv -f /tmp/MosChinaDNSupdatelist/temp_chn.list "$workdir/chn.list"
@@ -46,6 +46,7 @@ EXIT(){
 
 main(){
     touch /var/run/update_list
+    rm -rf /tmp/MosChinaDNSupdatelist 2>/dev/null
     rm /var/run/update_list_error 2>/dev/null
     mkdir /tmp/MosChinaDNSupdatelist
     update_ip_list
