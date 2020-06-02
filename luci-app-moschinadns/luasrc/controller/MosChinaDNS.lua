@@ -125,7 +125,7 @@ if fs.access("/var/run/update_core") then
 else
 	http.write(a.."\0")
 end
+end
 function do_update_list()
 	luci.sys.exec("sh /usr/share/MosChinaDNS/update_list.sh")
-end
 end
