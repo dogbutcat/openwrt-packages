@@ -27,7 +27,7 @@ XHR.poll(3, '<%=url([[admin]], [[services]], [[MosChinaDNS]], [[checkupdatelist]
 				return	
 			}else if(x.responseText=="2" || x.responseText=="3" || x.responseText=="1"){
 				updatelistbtn.disabled = false;
-				update.value = "Error "+x.responseText
+				updatelistbtn.value = "Error "+x.responseText
 			}
 		}
 	}
