@@ -19,14 +19,14 @@ XHR.poll(3, '<%=url([[admin]], [[services]], [[MosChinaDNS]], [[checkupdatelist]
 				for(j = 0,len=this.XHR._q.length; j < len; j++) {
 					if (this.XHR._q[j].url == '<%=url([[admin]], [[services]], [[MosChinaDNS]], [[checkupdatelist]])%>'){
 						this.XHR._q.splice(j,1);
-						updatebtn.disabled = false;
-						updatebtn.value    = '<%:Updated%>';
+						updatelistbtn.disabled = false;
+						updatelistbtn.value    = '<%:Updated%>';
 						break;
 					}
 				}
 				return	
 			}else if(x.responseText=="2" || x.responseText=="3" || x.responseText=="1"){
-				updatebtn.disabled = false;
+				updatelistbtn.disabled = false;
 				update.value = "Error "+x.responseText
 			}
 		}
@@ -34,9 +34,9 @@ XHR.poll(3, '<%=url([[admin]], [[services]], [[MosChinaDNS]], [[checkupdatelist]
 );}
 
 <% if fs.access("/var/run/update_list") then %>
-	updatebtn.disabled = true;
-	updatebtn.value    = '<%:Check...%>';
-	forceupdatebtn.style.display="inline"
+	updatelistbtn.disabled = true;
+	updatelistbtn.value    = '<%:Check...%>';
+	forceupdatelistbtn.style.display="inline"
 	poll_check();
 <%elseif fs.access("/var/run/update_list_error") then %>
 	poll_check();
