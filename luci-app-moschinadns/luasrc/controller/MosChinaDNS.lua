@@ -15,6 +15,7 @@ entry({"admin", "services", "MosChinaDNS", "dodellog"}, call("do_dellog"))
 entry({"admin", "services", "MosChinaDNS", "reloadconfig"}, call("reload_config"))
 entry({"admin", "services", "MosChinaDNS", "gettemplateconfig"}, call("get_template_config"))
 entry({"admin", "services", "MosChinaDNS", "doupdatelist"}, call("do_update_list"))
+entry({"admin", "services", "MosChinaDNS", "checkupdatelist"}, call("check_update_list"))
 end 
 function get_template_config()
 	local b
@@ -127,5 +128,26 @@ else
 end
 end
 function do_update_list()
-	luci.sys.exec("sh /usr/share/MosChinaDNS/update_list.sh")
+	luci.sys.exec("sh /usr/share/MosChinaDNS/update_list.sh >/tmp/MosChinaDNS_update_list.log 2>&1  &")
+end
+function check_update_list()
+	http.prepare_content("text/plain; charset=utf-8")
+	local fdp=tonumber(fs.readfile("/var/run/lucilogpos")) or 0
+	local f=io.open("/tmp/MosChinaDNS_update_list.log", "r+")
+	f:seek("set",fdp)
+	local a=f:read(2048000) or ""
+	fdp=f:seek()
+	fs.writefile("/var/run/lucilogpos",tostring(fdp))
+	f:close()
+if fs.access("/var/run/update_list") then
+	http.write(a)
+else
+	if fs.access("/var/run/update_list_error") then
+		local ferr=io.open("/var/run/update_list_error", "r+")
+		a=f:read()
+		http.write(a)
+	else
+		http.write(a.."\0")
+	end
+end
 end
