@@ -145,7 +145,7 @@ else
 	if fs.access("/var/run/update_list_error") then
 		local ferr=io.open("/var/run/update_list_error", "r+")
 		a=ferr:read()
-		ferr.close()
+		ferr:close()
 		http.write(a)
 	else
 		http.write(a.."\0")
