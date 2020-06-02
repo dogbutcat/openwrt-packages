@@ -1,0 +1,16 @@
+<%+cbi/valueheader%>
+<%local fs=require"nixio.fs"%>
+<input type="button" class="cbi-button cbi-button-apply" id="apply_update_list_button" value="<%:Update list%>" onclick=" return apply_update() "/>
+</div>
+<script type="text/javascript">//<![CDATA[
+var updatelistbtn = document.getElementById('apply_update_list_button');
+function apply_update(){
+	XHR.get('<%=url([[admin]], [[services]], [[MosChinaDNS]], [[doupdatelist]])%>',null,function(x, data){});
+	updatelistbtn.disabled = true;
+	updatelistbtn.value    = '<%:Check...%>';
+	return
+}
+
+//]]>
+</script>
+<%+cbi/valuefooter%>

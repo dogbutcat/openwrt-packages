@@ -14,6 +14,7 @@ entry({"admin", "services", "MosChinaDNS", "getlog"}, call("get_log"))
 entry({"admin", "services", "MosChinaDNS", "dodellog"}, call("do_dellog"))
 entry({"admin", "services", "MosChinaDNS", "reloadconfig"}, call("reload_config"))
 entry({"admin", "services", "MosChinaDNS", "gettemplateconfig"}, call("get_template_config"))
+entry({"admin", "services", "MosChinaDNS", "doupdatelist"}, call("do_update_list"))
 end 
 function get_template_config()
 	local b
@@ -124,4 +125,6 @@ if fs.access("/var/run/update_core") then
 else
 	http.write(a.."\0")
 end
+function do_update_list()
+	luci.sys.exec("sh /usr/share/MosChinaDNS/update_list.sh")
 end

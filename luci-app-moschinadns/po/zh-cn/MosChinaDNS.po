@@ -37,6 +37,8 @@ msgstr "更新"
 #button change
 msgid "Update core version"
 msgstr "更新核心版本"
+msgid "Update list"
+msgstr "更新国内列表数据"
 
 msgid "Check..."
 msgstr "检查中..."
