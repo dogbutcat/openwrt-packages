@@ -336,7 +336,7 @@ config_editor()
 }
 
 boot_service() {
-	rm /var/run/AdGserverdis >/dev/null 2>&1
+	rm /var/run/MCDserverdis >/dev/null 2>&1
 	config_load "${CONFIGURATION}"
 	config_get waitonboot $CONFIGURATION waitonboot "0"
 	config_get_bool enabled $CONFIGURATION enabled 0
@@ -393,7 +393,7 @@ backup() {
 }
 start_service() {
 	# Reading config
-	rm /var/run/AdGserverdis >/dev/null 2>&1
+	rm /var/run/MCDserverdis >/dev/null 2>&1
 	config_load "${CONFIGURATION}"
 	# update password
 	config_get hashpass $CONFIGURATION hashpass ""
@@ -529,7 +529,7 @@ stop_service()
 		fi
 	fi
 	echo "MosChinaDNS service disabled"
-	touch /var/run/AdGserverdis
+	touch /var/run/MCDserverdis
 }
 boot() {
 	rc_procd boot_service "$@"

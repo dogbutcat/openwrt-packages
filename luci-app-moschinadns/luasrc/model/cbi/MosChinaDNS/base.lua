@@ -282,7 +282,7 @@ o.write = function(self, section, value)
 end
 fs.writefile("/var/run/lucilogpos","0")
 function m.on_commit(map)
-	if (fs.access("/var/run/AdGserverdis")) then
+	if (fs.access("/var/run/MCDserverdis")) then
 		io.popen("/etc/init.d/MosChinaDNS reload &")
 		return
 	end
