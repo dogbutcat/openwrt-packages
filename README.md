@@ -9,8 +9,12 @@ these packages is for my own build openwrt images, no convience for compiled ipk
 ├── adguardhome # adguard binary to avoid first init failure
 ├── luci-app-adguardhome # luci view for adguard
 ├── luci-app-moschinadns # luci view for mos-chinadns
+├── luci-app-speederv2 # luci view for speederv2
+├── luci-app-udp2raw # luci view for udp2raw
 ├── luci-theme-opentomcat # personal prefer theme
-└── mos-chinadns # binary for mos-chinadns
+├── mos-chinadns # binary for mos-chinadns
+├── openwrt-udp2raw # binary for udp2raw
+└── speederv2 # binary for speederv2
 ```
 
 ## subtree update
@@ -18,6 +22,9 @@ these packages is for my own build openwrt images, no convience for compiled ipk
 ```shell
 git subtree pull --prefix=luci-app-adguardhome https://github.com/rufengsuixing/luci-app-adguardhome.git master --squash
 git subtree pull --prefix=luci-theme-opentomcat https://github.com/Leo-Jo-My/luci-theme-opentomcat.git master --squash
+git subtree pull --prefix=luci-app-speederv2 https://github.com/haodong/luci-app-speederv2.git master --squash
+git subtree pull --prefix=luci-app-udp2raw https://github.com/sensec/luci-app-udp2raw.git master --squash
+git subtree pull --prefix=openwrt-udp2raw https://github.com/sensec/openwrt-udp2raw.git master --squash
 ```
 
 ## Todo
