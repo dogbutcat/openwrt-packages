@@ -460,11 +460,12 @@ start_service() {
 		ADDITIONAL_ARGS="$ADDITIONAL_ARGS -debug"
 	fi
 
-	config_get logfile $CONFIGURATION logfile ""
-	if [ -n "$logfile" ]; then
-		# put this to final for save log
-		ADDITIONAL_ARGS="$ADDITIONAL_ARGS &> $logfile"
-	fi
+	# do not support output
+	# config_get logfile $CONFIGURATION logfile ""
+	# if [ -n "$logfile" ]; then
+	# 	# put this to final for save log
+	# 	ADDITIONAL_ARGS="$ADDITIONAL_ARGS &> $logfile"
+	# fi
 
 	procd_open_instance
 	get_tz
