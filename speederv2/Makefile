@@ -1,83 +1,54 @@
 #
-# Copyright (C) 2019 OpenWrt.org
+# Copyright (c) 2017 Yu Wang <wangyucn@gmail.com>
 #
-# KFERMercer <KFER.Mercer@gmail.com>
-#
-# This is free software, licensed under the GNU General Public License v3.
+# This is free software, licensed under the MIT.
+# See /LICENSE for more information.
 #
 
 include $(TOPDIR)/rules.mk
 
-PKG_NAME:=speederv2
+PKG_NAME:=speederv2-tunnel
 PKG_VERSION:=20190121.0
 PKG_RELEASE:=1
+
+PKG_SOURCE_PROTO:=git
+PKG_SOURCE_URL:=https://github.com/wangyu-/UDPspeeder.git
+# PKG_SOURCE_VERSION:=ecc90928d33741dbe726b547f2d8322540c26ea0 # latest
+PKG_SOURCE_VERSION:=f0a7b28a63505edbb4f89163bb10ad992c57e657
+PKG_SOURCE_SUBDIR:=$(PKG_NAME)-$(PKG_VERSION)
+PKG_SOURCE:=$(PKG_NAME)-$(PKG_VERSION)-$(PKG_SOURCE_VERSION).tar.xz
+
+PKG_MAINTAINER:=Yu Wang
+
+PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)
+
+PKG_BUILD_PARALLEL:=1
 
 include $(INCLUDE_DIR)/package.mk
 
 define Package/$(PKG_NAME)
 	SECTION:=net
 	CATEGORY:=Network
-	TITLE:=udp speederv2 is for udp speed up
+	TITLE:=Tunnel which speed up udp packages
 	URL:=https://github.com/wangyu-/UDPspeeder
 endef
 
-
 define Package/$(PKG_NAME)/description
-Mos-ChinaDNS is a low laterncy DNS client support DoH/DoT
+	udpspeeder-tunnel is a tunnel which speed up udp package.
 endef
 
-# 禁止OpenWrt对二进制文件进行strip
-STRIP:=true
-
-ifeq ($(ARCH),i386)
-	PKG_ARCH_SPEEDERV2:=x86
-endif
-
-ifeq ($(ARCH),x86_64)
-	PKG_ARCH_SPEEDERV2:=amd64
-endif
-
-ifeq ($(ARCH),mipsel)
-	PKG_ARCH_SPEEDERV2:=mips24kc_be
-endif
-
-ifeq ($(ARCH),mips)
-	PKG_ARCH_SPEEDERV2:=mips24kc_le
-endif
-
-ifeq ($(ARCH),arm)
-	PKG_ARCH_SPEEDERV2:=arm
-endif
-
-ifeq ($(ARCH),aarch64)
-	PKG_ARCH_SPEEDERV2:=arm64
-endif
-
-
-PKG_SOURCE:=speederv2_binaries.tar.gz
-
-# https://github.com/wangyu-/UDPspeeder/releases/download/20190121.0/speederv2_binaries.tar.gz
-PKG_SOURCE_URL:=https://github.com/wangyu-/UDPspeeder/releases/download/$(PKG_VERSION)/
-
-UNTAR_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)/$(PKG_NAME)-extract/$(PKG_ARCH_SPEEDERV2)
-
-PKG_HASH:=skip
-
-define Build/Prepare
-	mkdir -vp $(UNTAR_DIR)
-	tar -zxvf $(DL_DIR)/$(PKG_SOURCE) -C $(UNTAR_DIR)
-endef
+MAKE_FLAGS += cross2
 
 define Build/Configure
-endef
-
-define Build/Compile
+	$(call Build/Configure/Default)
+	$(SED) 's/cc_cross[[:space:]]*=.*/cc_cross=$(TARGET_CXX)/' \
+		-e 's/\\".*shell git rev-parse HEAD.*\\"/\\"$(PKG_SOURCE_VERSION)\\"/' \
+		$(PKG_BUILD_DIR)/makefile
 endef
 
 define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(UNTAR_DIR)/speederv2_$(PKG_ARCH_SPEEDERV2) $(1)/usr/bin/$(PKG_NAME)
-	chmod +x $(1)/usr/bin/$(PKG_NAME)
+	$(INSTALL_BIN) $(PKG_BUILD_DIR)/speederv2_cross $(1)/usr/bin/speederv2
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))
