@@ -2,7 +2,7 @@
 PATH="/usr/sbin:/usr/bin:/sbin:/bin"
 IP_URL="https://ftp.apnic.net/apnic/stats/apnic/delegated-apnic-latest"
 DOMAIN_URL="https://raw.githubusercontent.com/felixonmars/dnsmasq-china-list/master/accelerated-domains.china.conf"
-WORKDIR=$(uci get MosChinaDNS.MosChinaDNS.WORKDIR 2>/dev/null)
+WORKDIR=$(uci get MosChinaDNS.MosChinaDNS.workdir 2>/dev/null)
 TEMPDIR="/tmp/MosChinaDNSupdatelist"
 
 # IP/MASK
