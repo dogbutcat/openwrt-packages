@@ -1,18 +1,18 @@
 <%+cbi/valueheader%>
 <%local fs=require"nixio.fs"%>
-<input type="button" class="cbi-button cbi-button-apply" id="apply_update_list_button" value="<%:Update list%>" onclick=" return apply_update() "/>
+<input type="button" class="cbi-button cbi-button-apply" id="apply_update_list_button" value="<%:Update list%>" onclick=" return apply_list_update() "/>
 </div>
 <script type="text/javascript">//<![CDATA[
 var inited=false;
 var updatelistbtn = document.getElementById('apply_update_list_button');
-function apply_update(){
+function apply_list_update(){
 	XHR.get('<%=url([[admin]], [[services]], [[MosChinaDNS]], [[doupdatelist]])%>',null,function(x, data){});
 	updatelistbtn.disabled = true;
 	updatelistbtn.value    = '<%:Check...%>';
-	poll_check();
+	poll_list_check();
 	return
 }
-function poll_check(){
+function poll_list_check(){
 XHR.poll(3, '<%=url([[admin]], [[services]], [[MosChinaDNS]], [[checkupdatelist]])%>', null,
 	function(x, data) {
 		if (x.responseText) {
@@ -38,12 +38,12 @@ XHR.poll(3, '<%=url([[admin]], [[services]], [[MosChinaDNS]], [[checkupdatelist]
 if(!inited){
 	updatelistbtn.disabled = true;
 	updatelistbtn.value    = '<%:Check...%>';
-	poll_check();
+	poll_list_check();
 	inited=true;
 }
 <%elseif fs.access("/var/run/update_list_error") then %>
 if(!inited){
-	poll_check();
+	poll_list_check();
 	inited=true;
 }
 <%end%>
