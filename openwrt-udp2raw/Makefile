@@ -40,6 +40,9 @@ endef
 
 ifneq ($(ARCH), $(filter $(ARCH), x86_64, 386))
 	MAKE_FLAGS += cross2
+	OUT_FILE:=$(PKG_BUILD_DIR)/udp2raw_cross
+else
+	OUT_FILE:=$(PKG_BUILD_DIR)/udp2raw
 endif
 
 define Build/Configure
@@ -51,11 +54,7 @@ endef
 
 define Package/udp2raw-tunnel/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	ifeq (,$(wildcard $(PKG_BUILD_DIR)/udp2raw))
-		$(INSTALL_BIN) $(PKG_BUILD_DIR)/udp2raw_cross $(1)/usr/bin/udp2raw
-	else
-		$(INSTALL_BIN) $(PKG_BUILD_DIR)/udp2raw $(1)/usr/bin/udp2raw
-	endif
+	$(INSTALL_BIN) $(OUT_FILE) $(1)/usr/bin/udp2raw
 endef
 
 $(eval $(call BuildPackage,udp2raw-tunnel))

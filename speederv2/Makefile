@@ -39,6 +39,9 @@ endef
 
 ifneq ($(ARCH), $(filter $(ARCH), x86_64, 386))
 	MAKE_FLAGS += cross2
+	OUT_FILE:=$(PKG_BUILD_DIR)/speederv2_cross
+else
+	OUT_FILE:=$(PKG_BUILD_DIR)/speederv2
 endif
 
 define Build/Configure
@@ -50,11 +53,7 @@ endef
 
 define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	ifeq (,$(wildcard $(PKG_BUILD_DIR)/speederv2))
-		$(INSTALL_BIN) $(PKG_BUILD_DIR)/speederv2_cross $(1)/usr/bin/speederv2
-	else
-		$(INSTALL_BIN) $(PKG_BUILD_DIR)/speederv2 $(1)/usr/bin/speederv2
-	endif
+	$(INSTALL_BIN) $(OUT_FILE) $(1)/usr/bin/speederv2
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))
