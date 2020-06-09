@@ -9,7 +9,7 @@ mkdir -p ${binpath%/*}
 upxflag=$(uci get MosChinaDNS.MosChinaDNS.upxflag 2>/dev/null)
 
 check_if_already_running(){
-	running_tasks="$(ps |grep "MosChinaDNS" |grep "update_core" |grep -v "grep" |awk '{print $1}' |wc -l)"
+	running_tasks="$(ps |grep "MosChinaDNS" |grep "update_moschinadns_core" |grep -v "grep" |awk '{print $1}' |wc -l)"
 	[ "${running_tasks}" -gt "2" ] && echo -e "\nA task is already running."  && EXIT 2
 }
 
@@ -27,10 +27,10 @@ check_latest_version(){
 	if [ -z "${latest_ver}" ]; then
 		echo -e "\nFailed to check latest version, please try again later."  && EXIT 1
 	fi
-	now_ver="$($binpath -c /dev/null --check-config 2>&1| grep -m 1 -E 'v[0-9.]+' -o)"
+	now_ver="$($binpath -v 2>&1 | grep -m 1 -E 'v[0-9.]+' -o)"
 	if [ "${latest_ver}"x != "${now_ver}"x ] || [ "$1" == "force" ]; then
 		echo -e "Local version: ${now_ver}., cloud version: ${latest_ver}." 
-		doupdate_core
+		doupdate_moschinadns_core
 	else
 			echo -e "\nLocal version: ${now_ver}, cloud version: ${latest_ver}." 
 			echo -e "You're already using the latest version." 
@@ -114,7 +114,7 @@ doupx(){
 	fi
 	rm /tmp/upx-${upx_latest_ver}-${Arch}_linux.tar.xz
 }
-doupdate_core(){
+doupdate_moschinadns_core(){
 	echo -e "Updating core..." 
 	mkdir -p "/tmp/MosChinaDNSupdate"
 	rm -rf /tmp/MosChinaDNSupdate/* >/dev/null 2>&1
@@ -227,8 +227,8 @@ doupdate_core(){
 	EXIT 0
 }
 EXIT(){
-	rm /var/run/update_core 2>/dev/null
-	[ "$1" != "0" ] && touch /var/run/update_core_error
+	rm /var/run/update_moschinadns_core 2>/dev/null
+	[ "$1" != "0" ] && touch /var/run/update_moschinadns_core_error
 	exit $1
 }
 main(){
@@ -237,6 +237,6 @@ main(){
 	check_latest_version $1
 }
 	trap "EXIT 1" SIGTERM SIGINT
-	touch /var/run/update_core
-	rm /var/run/update_core_error 2>/dev/null
+	touch /var/run/update_moschinadns_core
+	rm /var/run/update_moschinadns_core_error 2>/dev/null
 	main $1

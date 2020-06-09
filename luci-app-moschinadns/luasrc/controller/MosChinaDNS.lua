@@ -67,12 +67,12 @@ function do_update()
 	else
 		arg=""
 	end
-	if fs.access("/var/run/update_core") then
+	if fs.access("/var/run/update_moschinadns_core") then
 		if arg=="force" then
-			luci.sys.exec("kill $(pgrep /usr/share/MosChinaDNS/update_core.sh) ; sh /usr/share/MosChinaDNS/update_core.sh "..arg.." >/tmp/MosChinaDNS_update.log 2>&1 &")
+			luci.sys.exec("kill $(pgrep /usr/share/MosChinaDNS/update_moschinadns_core.sh) ; sh /usr/share/MosChinaDNS/update_moschinadns_core.sh "..arg.." >/tmp/MosChinaDNS_update.log 2>&1 &")
 		end
 	else
-		luci.sys.exec("sh /usr/share/MosChinaDNS/update_core.sh "..arg.." >/tmp/MosChinaDNS_update.log 2>&1 &")
+		luci.sys.exec("sh /usr/share/MosChinaDNS/update_moschinadns_core.sh "..arg.." >/tmp/MosChinaDNS_update.log 2>&1 &")
 	end
 end
 function get_log()
@@ -121,7 +121,7 @@ function check_update()
 	fdp=f:seek()
 	fs.writefile("/var/run/lucilogpos",tostring(fdp))
 	f:close()
-if fs.access("/var/run/update_core") then
+if fs.access("/var/run/update_moschinadns_core") then
 	http.write(a)
 else
 	http.write(a.."\0")

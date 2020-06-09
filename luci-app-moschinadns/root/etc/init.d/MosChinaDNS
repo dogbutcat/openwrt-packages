@@ -451,7 +451,7 @@ start_service() {
 
 	if [ ! -f "$binpath" ]; then
 		_do_redirect 0
-		/usr/share/MosChinaDNS/update_core.sh 2>&1 >/tmp/MosChinaDNS_update.log &
+		/usr/share/MosChinaDNS/update_moschinadns_core.sh 2>&1 >/tmp/MosChinaDNS_update.log &
 		exit 0
 	fi
 
@@ -548,8 +548,8 @@ do_crontab(){
 	local findstr default cronenable replace commit
 	local cronreload=0
 	local commit=0
-	findstr="/usr/share/MosChinaDNS/update_core.sh"
-	default="30 3 * * * /usr/share/MosChinaDNS/update_core.sh 2>&1"
+	findstr="/usr/share/MosChinaDNS/update_moschinadns_core.sh"
+	default="30 3 * * * /usr/share/MosChinaDNS/update_moschinadns_core.sh 2>&1"
 	[ "$enabled" == "0" ] || [ "${crontab//autoupdate/}" == "$crontab" ] && cronenable=0 || cronenable=1
 	crontab_editor
 	
