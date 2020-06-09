@@ -38,7 +38,9 @@ define Package/udp2raw-tunnel/description
 	udp2raw-tunnel is a tunnel which turns UDP Traffic into Encrypted FakeTCP/UDP/ICMP Traffic by using Raw Socket.
 endef
 
-MAKE_FLAGS += cross2
+ifneq ($(ARCH), $(filter $(ARCH), x86_64, 386))
+	MAKE_FLAGS += cross2
+endif
 
 define Build/Configure
 	$(call Build/Configure/Default)
@@ -49,7 +51,11 @@ endef
 
 define Package/udp2raw-tunnel/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/udp2raw_cross $(1)/usr/bin/udp2raw
+	ifeq (,$(wildcard $(PKG_BUILD_DIR)/udp2raw))
+		$(INSTALL_BIN) $(PKG_BUILD_DIR)/udp2raw_cross $(1)/usr/bin/udp2raw
+	else
+		$(INSTALL_BIN) $(PKG_BUILD_DIR)/udp2raw $(1)/usr/bin/udp2raw
+	endif
 endef
 
 $(eval $(call BuildPackage,udp2raw-tunnel))

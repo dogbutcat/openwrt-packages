@@ -37,7 +37,9 @@ define Package/$(PKG_NAME)/description
 	udpspeeder-tunnel is a tunnel which speed up udp package.
 endef
 
-MAKE_FLAGS += cross2
+ifneq ($(ARCH), $(filter $(ARCH), x86_64, 386))
+	MAKE_FLAGS += cross2
+endif
 
 define Build/Configure
 	$(call Build/Configure/Default)
@@ -48,7 +50,11 @@ endef
 
 define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/usr/bin
-	$(INSTALL_BIN) $(PKG_BUILD_DIR)/speederv2_cross $(1)/usr/bin/speederv2
+	ifeq (,$(wildcard $(PKG_BUILD_DIR)/speederv2))
+		$(INSTALL_BIN) $(PKG_BUILD_DIR)/speederv2_cross $(1)/usr/bin/speederv2
+	else
+		$(INSTALL_BIN) $(PKG_BUILD_DIR)/speederv2 $(1)/usr/bin/speederv2
+	endif
 endef
 
 $(eval $(call BuildPackage,$(PKG_NAME)))
