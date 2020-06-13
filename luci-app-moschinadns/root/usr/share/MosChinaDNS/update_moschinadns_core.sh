@@ -130,19 +130,19 @@ doupdate_moschinadns_core(){
 	Arch="amd64"
 	;;
 	"mipsel")
-	Arch="mipsle"
+	Arch="mipsle-softfloat"
 	;;
 	"mips64el")
-	Arch="mips64le"
-	Arch="mipsle"
+	Arch="mips64le-softfloat"
+	Arch="mipsle-softfloat"
 	echo -e "mips64el use $Arch may have bug" 
 	;;
 	"mips")
-	Arch="mips"
+	Arch="mips-softfloat"
 	;;
 	"mips64")
-	Arch="mips64"
-	Arch="mips"
+	Arch="mips64-softfloat"
+	Arch="mips-softfloat"
 	echo -e "mips64 use $Arch may have bug" 
 	;;
 	"arm")

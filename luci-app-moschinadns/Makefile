@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-moschinadns
 PKG_VERSION:=1.1
-PKG_RELEASE:=21
+PKG_RELEASE:=22
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
