@@ -3,13 +3,22 @@ bind:
   addr: "0.0.0.0:5353" 
   protocol: "all" # 监听协议，`tcp`|`udp`|`all`。留空默认`all`
 
+# 分流器设定
+dispatcher:
+  max_concurrent_queries: 50 # 最大并发查询数。默认50。
+
 # 服务器
 server:
   # 用于解析大陆域名的本地服务器
   local: 
     addr: "223.5.5.5:53" # 服务器地址，留空将禁用本地服务器
     protocol: "udp" # 服务器协议。`tcp`|`udp`|`doh`|`dot`。留空默认`udp`
-   
+    socks5: "" # socks5代理服务器地址，不支持udp协议，不支持认证。
+
+    # TCP设定，仅`protocol`为`tcp`时有用。
+    tcp:
+      idle_timeout: 10 # 空连接超时时间。单位: 秒。0表示禁用连接重用。
+
     # DoH选项，仅`protocol`为`doh`有用
     doh: 
         # [必需] DoH的URL
@@ -30,7 +39,7 @@ server:
         # 建议小于服务器端的超时时间且不大于30秒
         # 0表示禁用连接重用，每次请求将建立新连接并在完成请求后立即关闭该连接
         # 注意：可能不是所有服务器都允许保持空连接(RFC 7766)
-        idle_timeout: 5 
+        idle_timeout: 10
 
     # 是否屏蔽不常见请求的类型
     # 不常见类型为：包含多个Question|非常见的A和AAAA请求
@@ -86,7 +95,11 @@ server:
   remote:
     addr: "1.0.0.1:853" # 地址，留空将禁用远程服务器
     protocol: "dot" # 协议。`tcp`|`udp`|`doh`|`dot`。留空默认`udp`
-    
+    socks5: ""
+
+    tcp:
+      idle_timeout: 10
+
     # 参见上文 local 部分
     doh:
         url: "https://cloudflare-dns.com/dns-query" 
