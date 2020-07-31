@@ -10,8 +10,8 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=AdGuardHome
 PROJECT_NAME:=AdGuardHome
-PKG_VERSION:=v0.102.0
-PKG_RELEASE:=1
+PKG_VERSION:=v0.103.3
+PKG_RELEASE:=2
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -38,11 +38,19 @@ ifeq ($(ARCH),x86_64)
 endif
 
 ifeq ($(ARCH),mipsel)
-	PKG_ARCH_ADGUARDHOME:=mipsle
+	PKG_ARCH_ADGUARDHOME:=mipsle_softfloat
+endif
+
+ifeq ($(ARCH),mips64el)
+	PKG_ARCH_ADGUARDHOME:=mips64le_softfloat
 endif
 
 ifeq ($(ARCH),mips)
-	PKG_ARCH_ADGUARDHOME:=mips
+	PKG_ARCH_ADGUARDHOME:=mips_softfloat
+endif
+
+ifeq ($(ARCH),mips64)
+	PKG_ARCH_ADGUARDHOME:=mips64_softfloat
 endif
 
 ifeq ($(ARCH),arm)

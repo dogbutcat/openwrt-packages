@@ -134,16 +134,16 @@ doupdate_core(){
 	;;
 	"mips64el")
 	Arch="mips64le"
-	Arch="mipsle"
-	echo -e "mips64el use $Arch may have bug" 
+	# Arch="mipsle"
+	# echo -e "mips64el use $Arch may have bug" 
 	;;
 	"mips")
 	Arch="mips"
 	;;
 	"mips64")
 	Arch="mips64"
-	Arch="mips"
-	echo -e "mips64 use $Arch may have bug" 
+	# Arch="mips"
+	# echo -e "mips64 use $Arch may have bug" 
 	;;
 	"arm")
 	Arch="arm"
