@@ -9,8 +9,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=MosChinaDNS
-PKG_VERSION:=v1.5.2
-PKG_RELEASE:=8
+PKG_VERSION:=v1.5.6
+PKG_RELEASE:=9
 
 include $(INCLUDE_DIR)/package.mk
 
