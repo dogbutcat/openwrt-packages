@@ -36,7 +36,7 @@ endif
 
 ifeq ($(ARCH),x86_64)
 	PKG_ARCH_MOSCHINADNS:=amd64
-	PKG_HASH:=skip
+	PKG_HASH:=6c99d7b4556c311c2b79cdff077ef3925cdde90bab1ef0c6630bb9038d7faa44
 endif
 
 ifeq ($(ARCH),mipsel)
