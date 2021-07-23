@@ -31,26 +31,32 @@ STRIP:=true
 
 ifeq ($(ARCH),i386)
 	PKG_ARCH_MOSCHINADNS:=86
+	PKG_HASH:=skip
 endif
 
 ifeq ($(ARCH),x86_64)
 	PKG_ARCH_MOSCHINADNS:=amd64
+	PKG_HASH:=skip
 endif
 
 ifeq ($(ARCH),mipsel)
 	PKG_ARCH_MOSCHINADNS:=mipsle-softfloat
+	PKG_HASH:=1ca0af5c6f7384f0afc4b91cb87036aacf2e5e9b246bc62613bcad2a3ecb44c1
 endif
 
 ifeq ($(ARCH),mips)
 	PKG_ARCH_MOSCHINADNS:=mipsle-softfloat
+	PKG_HASH:=1ca0af5c6f7384f0afc4b91cb87036aacf2e5e9b246bc62613bcad2a3ecb44c1
 endif
 
 ifeq ($(ARCH),arm)
 	PKG_ARCH_MOSCHINADNS:=arm-7
+	PKG_HASH:=skip
 endif
 
 ifeq ($(ARCH),aarch64)
 	PKG_ARCH_MOSCHINADNS:=arm64
+	PKG_HASH:=skip
 endif
 
 
@@ -60,8 +66,6 @@ PKG_SOURCE:=mos-chinadns-linux-$(PKG_ARCH_MOSCHINADNS).zip
 PKG_SOURCE_URL:=https://github.com/IrineSistiana/mos-chinadns/releases/download/$(PKG_VERSION)/
 
 UNZIP_DIR:=$(BUILD_DIR)/$(PKG_NAME)-$(PKG_VERSION)/$(PKG_NAME)-unzip
-
-PKG_HASH:=skip
 
 define Build/Prepare
 	mkdir -vp $(UNZIP_DIR)
@@ -78,7 +82,7 @@ define Package/$(PKG_NAME)/install
 	$(INSTALL_DIR) $(1)/usr/bin
 	mkdir $(1)/usr/bin/$(PKG_NAME)
 	$(INSTALL_BIN) $(UNZIP_DIR)/mos-chinadns $(1)/usr/bin/$(PKG_NAME)/$(PKG_NAME)
-	$(INSTALL_BIN) $(UNZIP_DIR)/chn.list $(1)/usr/bin/$(PKG_NAME)/chn.list
+	$(INSTALL_BIN) $(UNZIP_DIR)/chn_ip.list $(1)/usr/bin/$(PKG_NAME)/chn.list
 	$(INSTALL_BIN) $(UNZIP_DIR)/chn_domain.list $(1)/usr/bin/$(PKG_NAME)/chn_domain.list
 	chmod 755 $(1)/usr/bin/$(PKG_NAME)
 endef
