@@ -1,0 +1,215 @@
+# addr: "127.0.0.1:5353"
+log:
+  level: info
+  file: ""
+library: []
+plugin:
+  - tag: 'main_server'    # 启动服务器
+    type: 'server'
+    args:
+      entry:
+        - 'cache'
+        - 'encrypt_dns'
+      max_concurrent_queries: 0  # 插件最大并发处理请求数。默认 0 代表无限制。
+      server:
+        - protocol: udp
+          addr: 127.0.0.1:5353
+        - protocol: tcp
+          addr: 127.0.0.1:5353
+        - protocol: udp
+          addr: "[::1]:5353"
+        - protocol: tcp
+          addr: "[::1]:5353"
+
+  - tag: 'encrypt_dns'
+    type: pipeline
+    args:
+      pipe:
+        - 'check_black_list'
+
+  ################ 序列 #################
+
+  - tag: 'check_black_list'
+    type: sequence
+    args:
+      exec:
+        - if:
+            - 'match_ad_domain'
+          exec:
+            - _block_with_nxdomain
+            - _end
+        - 'sequence_exclude_domain'
+
+  - tag: 'sequence_exclude_domain'
+    type: sequence
+    args:
+      exec:
+        - if:
+            - 'match_exclude_domain'
+          exec:
+            - 'sequence_local' # goto local plugin
+            - _end
+        - 'sequence_remote'
+
+  - tag: 'sequence_remote'    # 分流路由
+    type: sequence
+    args:
+      exec:
+        - if:
+            - 'match_non_local_domain'
+          exec:
+            - primary:
+                - 'forward_remote'
+              secondary:
+                - 'forward_google'
+              stat_length: 10   # 常规 fallback 统计长度。默认 0，禁用常规 fallback。可省略。
+              threshold: 5      # 常规 fallback 触发阈值。不可大于统计长度。默认 0。可省略。
+              fast_fallback: 200    # 快速 fallback 触发阈值。单位: 毫秒。默认: 0，禁用快速 fallback。可省略。
+              always_standby: true # 快速 fallback secondary 始终待命。可省略。
+            - if:
+                - _qtype_A_AAAA
+              exec:
+                - _end
+            - 'sequence_local'
+
+  - tag: 'sequence_local'    # 分流路由
+    type: sequence
+    args:
+      exec:
+        - parallel:
+          - - 'forward_local'
+          - - 'forward_114'
+          - - 'ecs_manual'
+            - 'forward_freenom'
+        - if:
+            - '_response_rcode_success'
+          exec:
+            - _end
+
+        - 'forward_remote'
+        - if:
+            - !_response_rcode_success
+          exec:
+            - 'forward_google'
+
+  ################ 查询过滤器 #################
+
+  - tag: 'match_local_domain'   # 匹配本地域名
+    type: query_matcher
+    args:
+      domain:
+        - "ext:./geosite.dat:cn"
+
+  - tag: 'match_non_local_domain'   # 匹配非本地域名
+    type: query_matcher
+    args:
+      domain:
+        - "ext:./geosite.dat:geolocation-!cn" # include google and apple domain https://github.com/Loyalsoldier/v2ray-rules-dat#geositedat
+
+  - tag: 'match_ad_domain'   # 匹配广告域名
+    type: query_matcher
+    args:
+      domain:
+        - "ext:./geosite.dat:category-ads-all"
+
+  - tag: 'match_exclude_domain'   # 额外匹配
+    type: query_matcher
+    args:
+      domain:
+        - "ext:./geosite.dat:apple-cn"
+      # client_ip:
+      #   - '192.168.1.1/24'
+
+  ################# 响应过滤器 ################
+
+  - tag: 'match_local_ip'       # 匹配本地 IP
+    type: response_matcher
+    args:
+      rcode: [1, 2, 3]
+      ip:
+        - "ext:./geoip.dat:cn"
+      cname:
+        - 'ext:./geosite.dat:cn'
+      # logical_and: false
+
+  - tag: 'ecs_manual'
+    type: 'ecs'
+    args:
+      auto: false             # 是否自动将客户端请求的来源地址作为 ECS 附加到请求。如果为 true，则预设地址不会被使用。
+                              # 仅适用于公网的服务器。本地运行不要启用这个功能。
+      # ipv4: '1.2.3.4'         # 预设的 IPv4 地址。会优先附加在 A 请求里。
+      # ipv6: '2001:dd8:1a::'   # 预设的 IPv6 地址。会优先附加在 AAAA 请求里。
+      force_overwrite: false  # 如果请求已有 ECS，是否强制覆盖。
+      # mask4: 24               # 用于 ipv4 地址的掩码。默认: 24。
+      # mask6: 48               # 用于 ipv6 地址的掩码。默认: 48。
+
+  ################# 功能性插件 ################
+
+  - tag: "cache"
+    type: cache
+    args:
+      size: 1024 
+      cleaner_interval: 120
+      # redis 外部缓存地址。
+      # 如果非空，将使用 redis 作为缓存。上面的参数将不会有用。
+      # 缓存大小，清除方式等，全部由 redis 控制。需在 redis 里设置。
+      # TCP 连接: `redis://<user>:<password>@<host>:<port>/<db_number>`
+      # Unix 连接: `unix://<user>:<password>@</path/to/redis.sock>?db=<db_number>`
+      # redis: 'redis://localhost:6379/0'
+
+  - tag: 'forward_local' # 转发至本地服务器
+    type: forward
+    args:
+      upstream:
+        - addr: "https://223.5.5.5/dns-query"
+      bootstrap:
+      - '9.9.9.9'
+      - '114.114.114.114'
+      timeout: 5          # 请求超时时间，单位: 秒。
+      fastest_ip: false   # 最快 IP 模式。测试所有解析到的 IP 的延时，仅返回延时最低的。(注意: 启用这个功能会导致 DNS 响应时间变长。)
+      deduplicate: false  # 是否请求去重。mosdns 的移植功能，说明详见 `fast_forward` 插件。
+      insecure_skip_verify: false  # 禁用 TLS 身份验证。
+
+  - tag: 'forward_114' # 转发至本地服务器
+    type: forward
+    args:
+      timeout: 10
+      upstream:
+        - addr: "114.114.114.114"
+
+  - tag: 'forward_freenom' # 转发至本地服务器
+    type: forward
+    args:
+      timeout: 10
+      upstream:
+        - addr: "80.80.80.80"
+
+  - tag: 'forward_remote' # 转发至远程服务器
+    type: fast_forward
+    args:
+      # ca: []
+      upstream:
+        - addr: 'tls://cloudflare-dns.com' # https://1dot1dot1dot1.cloudflare-dns.com
+          dial_addr: "1.0.0.1:843"
+          trusted: true
+          socks5: ""
+          idle_timeout: 10
+          # max_conns: 200
+          # insecure_skip_verify: false    # 禁用 TLS 验证。适用于 DoT，DoH 协议。
+      timeout: 5          # 请求超时时间。单位: 秒。默认 5。
+      deduplicate: false  # 是否请求去重。
+      ca: [ ]             # 用于 TLS 验证的 CA 证书路径。是数组，可填入多个证书。为空默认使用系统证书池。
+
+  - tag: 'forward_google'
+    type: fast_forward
+    args:
+      timeout: 5
+      upstream:
+        - addr: 'https://dns.google/dns-query'  # 必需。服务器地址。
+          dial_addr: '8.8.8.8:443'
+          socks5: ""
+          idle_timeout: 10
+          # max_conns: 100       # 最大连接数。适用于 TCP，DoT，DoH 协议。默认: 1。一般不需要改。
+          # insecure_skip_verify: false    # 禁用 TLS 验证。适用于 DoT，DoH 协议。
+      deduplicate: false  # 是否请求去重。
+      ca: [ ]             # 用于 TLS 验证的 CA 证书路径。是数组，可填入多个证书。为空默认使用系统证书池。
