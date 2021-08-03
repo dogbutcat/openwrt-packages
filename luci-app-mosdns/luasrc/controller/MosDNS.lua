@@ -20,22 +20,25 @@ end
 function get_template_config()
 	local b
 	local d=""
-	for cnt in io.lines("/tmp/resolv.conf.auto") do
-		b=string.match (cnt,"^[^#]*nameserver%s+([^%s]+)$")
-		if (b~=nil) then
-			d=d.."  - "..b.."\n"
-		end
-	end
+	-- for cnt in io.lines("/tmp/resolv.conf.auto") do
+	-- 	b=string.match (cnt,"^[^#]*nameserver%s+([^%s]+)$")
+	-- 	if (b~=nil) then
+	-- 		d=d.."  - "..b.."\n"
+	-- 	end
+	-- end
 	local f=io.open("/usr/share/MosDNS/MosDNS_template.yaml", "r+")
 	local tbl = {}
 	local a=""
 	while (1) do
     	a=f:read("*l")
-		if (a=="#bootstrap_dns") then
-			a=d
-		elseif (a=="#upstream_dns") then
-			a=d
-		elseif (a==nil) then
+		-- if (a=="#bootstrap_dns") then
+		-- 	a=d
+		-- elseif (a=="#upstream_dns") then
+		-- 	a=d
+		-- elseif (a==nil) then
+		-- 	break
+		-- end
+		if (a==nil) then
 			break
 		end
 		table.insert(tbl, a)

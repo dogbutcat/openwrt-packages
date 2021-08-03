@@ -4,23 +4,6 @@ log:
   file: ""
 library: []
 plugin:
-  - tag: 'main_server'    # 启动服务器
-    type: 'server'
-    args:
-      entry:
-        - 'cache'
-        - 'encrypt_dns'
-      max_concurrent_queries: 0  # 插件最大并发处理请求数。默认 0 代表无限制。
-      server:
-        - protocol: udp
-          addr: 127.0.0.1:5353
-        - protocol: tcp
-          addr: 127.0.0.1:5353
-        - protocol: udp
-          addr: "[::1]:5353"
-        - protocol: tcp
-          addr: "[::1]:5353"
-
   - tag: 'encrypt_dns'
     type: pipeline
     args:
@@ -67,10 +50,10 @@ plugin:
               fast_fallback: 200    # 快速 fallback 触发阈值。单位: 毫秒。默认: 0，禁用快速 fallback。可省略。
               always_standby: true # 快速 fallback secondary 始终待命。可省略。
             - if:
-                - _qtype_A_AAAA
+                - _response_rcode_success
               exec:
                 - _end
-            - 'sequence_local'
+        - 'sequence_local'
 
   - tag: 'sequence_local'    # 分流路由
     type: sequence
@@ -82,7 +65,7 @@ plugin:
           - - 'ecs_manual'
             - 'forward_freenom'
         - if:
-            - '_response_rcode_success'
+            - _response_rcode_success
           exec:
             - _end
 
@@ -175,14 +158,14 @@ plugin:
     args:
       timeout: 10
       upstream:
-        - addr: "114.114.114.114"
+        - addr: "tcp://114.114.114.114"
 
   - tag: 'forward_freenom' # 转发至本地服务器
     type: forward
     args:
       timeout: 10
       upstream:
-        - addr: "80.80.80.80"
+        - addr: "tcp://80.80.80.80"
 
   - tag: 'forward_remote' # 转发至远程服务器
     type: fast_forward
@@ -213,3 +196,22 @@ plugin:
           # insecure_skip_verify: false    # 禁用 TLS 验证。适用于 DoT，DoH 协议。
       deduplicate: false  # 是否请求去重。
       ca: [ ]             # 用于 TLS 验证的 CA 证书路径。是数组，可填入多个证书。为空默认使用系统证书池。
+
+  ################# 启动服务器 ################
+
+  - tag: 'main_server'    # 启动服务器
+    type: 'server'
+    args:
+      entry:
+        - 'cache'
+        - 'encrypt_dns'
+      max_concurrent_queries: 0  # 插件最大并发处理请求数。默认 0 代表无限制。
+      server:
+        - protocol: udp
+          addr: 127.0.0.1:5353
+        - protocol: tcp
+          addr: 127.0.0.1:5353
+        - protocol: udp
+          addr: "[::1]:5353"
+        - protocol: tcp
+          addr: "[::1]:5353"
