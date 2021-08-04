@@ -41,7 +41,7 @@ update_domain_list(){
     echo "Updating domain finished"
 }
 
-DOWNLOAD_LINK_GEOIP="https://cdn.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geoip.dat"
+DOWNLOAD_LINK_GEOIP="https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/geoip.dat"
 DOWNLOAD_LINK_GEOSITE="https://cdn.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geosite.dat"
 
 download_geoip() {

@@ -46,7 +46,7 @@ msgstr "已更新"
 
 #button
 msgid "Update list"
-msgstr "更新国内列表数据"
+msgstr "更新geo相关数据"
 
 #button hide
 msgid "Force update"
