@@ -6,8 +6,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-mosdns
-PKG_VERSION:=1.0.4
-PKG_RELEASE:=6
+PKG_VERSION:=1.0.5
+PKG_RELEASE:=7
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
@@ -18,7 +18,7 @@ define Package/luci-app-mosdns
 	CATEGORY:=LuCI
 	SUBMENU:=3. Applications
 	TITLE:=LuCI app for mosdns
-	PKG_MAINTAINER:=<https://github.com/dogbutcat/luci-app-mosdns>
+	PKG_MAINTAINER:=<https://github.com/dogbutcat/openwrt-packages>
 	PKGARCH:=all
 	DEPENDS:= \
 		+MosDNS \

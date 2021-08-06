@@ -10,7 +10,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=MosDNS
 PKG_VERSION:=v1.8.6
-PKG_RELEASE:=1
+PKG_RELEASE:=2
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -77,7 +77,7 @@ define Build/Prepare
 	mkdir -vp $(UNZIP_DIR)
 	unzip -od $(UNZIP_DIR) $(DL_DIR)/$(PKG_SOURCE)
 	wget -O $(UNZIP_DIR)/geosite.dat https://cdn.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geosite.dat
-	wget -O $(UNZIP_DIR)/geoip.dat https://cdn.jsdelivr.net/gh/Loyalsoldier/v2ray-rules-dat@release/geoip.dat
+	wget -O $(UNZIP_DIR)/geoip.dat https://raw.githubusercontent.com/Loyalsoldier/v2ray-rules-dat/release/geoip.dat
 endef
 
 define Build/Configure
