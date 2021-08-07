@@ -82,8 +82,8 @@ download_geosite() {
 
 rename_new() {
     for DAT in 'geoip' 'geosite'; do
-        install -m 644 "${TEMPDIR}/$DAT.dat.new" "${WORKDIR}/$DAT.dat"
-        rm "${TEMPDIR}/$DAT.dat.new"
+        mv "${TEMPDIR}/$DAT.dat.new" "${WORKDIR}/$DAT.dat"
+        # rm "${TEMPDIR}/$DAT.dat.new"
         rm "${TEMPDIR}/$DAT.dat.sha256sum.new"
     done
 }

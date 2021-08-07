@@ -136,19 +136,20 @@ end
 function check_update_list()
 	http.prepare_content("text/plain; charset=utf-8")
 	local fdp=tonumber(fs.readfile("/var/run/lucilogpos")) or 0
+	local a=""
 	if fs.access("/tmp/MosDNS_update_list.log") then
 		local f=io.open("/tmp/MosDNS_update_list.log", "r+")
 		f:seek("set",fdp)
-		local a=f:read(2048000) or ""
+		a=f:read(2048000)
 		fdp=f:seek()
 		fs.writefile("/var/run/lucilogpos",tostring(fdp))
 		f:close()
 	end
-	if fs.access("/var/run/update_list") then
+	if fs.access("/var/run/update_dat") then
 		http.write(a)
 	else
-		if fs.access("/var/run/update_list_error") then
-			local ferr=io.open("/var/run/update_list_error", "r+")
+		if fs.access("/var/run/update_dat_error") then
+			local ferr=io.open("/var/run/update_dat_error", "r+")
 			a=ferr:read()
 			ferr:close()
 			http.write(a)

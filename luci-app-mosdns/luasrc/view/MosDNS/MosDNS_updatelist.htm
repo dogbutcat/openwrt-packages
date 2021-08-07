@@ -34,14 +34,14 @@ XHR.poll(3, '<%=url([[admin]], [[services]], [[MosDNS]], [[checkupdatelist]])%>'
 	}
 );}
 
-<% if fs.access("/var/run/update_list") then %>
+<% if fs.access("/var/run/update_dat") then %>
 if(!inited){
 	updatelistbtn.disabled = true;
 	updatelistbtn.value    = '<%:Check...%>';
 	poll_list_check();
 	inited=true;
 }
-<%elseif fs.access("/var/run/update_list_error") then %>
+<%elseif fs.access("/var/run/update_dat_error") then %>
 if(!inited){
 	poll_list_check();
 	inited=true;

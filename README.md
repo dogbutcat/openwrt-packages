@@ -9,10 +9,12 @@ these packages is for my own build openwrt images, no convience for compiled ipk
 ├── adguardhome # adguard binary to avoid first init failure
 ├── luci-app-adguardhome # luci view for adguard
 ├── luci-app-moschinadns # luci view for mos-chinadns
+├── luci-app-mosdns # luci view for mosdns
 ├── luci-app-speederv2 # luci view for speederv2
 ├── luci-app-udp2raw # luci view for udp2raw
 ├── luci-theme-opentomcat # personal prefer theme
 ├── mos-chinadns # binary for mos-chinadns
+├── mosdns # binary for mosdns
 ├── openwrt-udp2raw # binary for udp2raw
 └── speederv2 # binary for speederv2
 ```
