@@ -140,7 +140,7 @@ function check_update_list()
 	if fs.access("/tmp/MosDNS_update_list.log") then
 		local f=io.open("/tmp/MosDNS_update_list.log", "r+")
 		f:seek("set",fdp)
-		a=f:read(2048000)
+		a=f:read(2048000) or ""
 		fdp=f:seek()
 		fs.writefile("/var/run/lucilogpos",tostring(fdp))
 		f:close()
@@ -150,7 +150,7 @@ function check_update_list()
 	else
 		if fs.access("/var/run/update_dat_error") then
 			local ferr=io.open("/var/run/update_dat_error", "r+")
-			a=ferr:read()
+			a=ferr:read() or ""
 			ferr:close()
 			http.write(a)
 		else
