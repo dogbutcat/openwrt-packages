@@ -146,8 +146,8 @@ plugin:
       upstream:
         - addr: "https://223.5.5.5/dns-query"
       bootstrap:
-      - '9.9.9.9'
-      - '114.114.114.114'
+        - '9.9.9.9'
+        - '114.114.114.114'
       timeout: 5          # 请求超时时间，单位: 秒。
       fastest_ip: false   # 最快 IP 模式。测试所有解析到的 IP 的延时，仅返回延时最低的。(注意: 启用这个功能会导致 DNS 响应时间变长。)
       deduplicate: false  # 是否请求去重。mosdns 的移植功能，说明详见 `fast_forward` 插件。
@@ -166,6 +166,7 @@ plugin:
       timeout: 10
       upstream:
         - addr: "tcp://80.80.80.80"
+          # ip_addr: "80.80.80.80"
 
   - tag: 'forward_remote' # 转发至远程服务器
     type: fast_forward
@@ -173,7 +174,7 @@ plugin:
       # ca: []
       upstream:
         - addr: 'tls://cloudflare-dns.com' # https://1dot1dot1dot1.cloudflare-dns.com
-          dial_addr: "1.0.0.1:843"
+          dial_addr: "1.0.0.1:853"
           trusted: true
           socks5: ""
           idle_timeout: 10
