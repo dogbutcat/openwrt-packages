@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-mosdns
 PKG_VERSION:=1.0.7
-PKG_RELEASE:=10
+PKG_RELEASE:=11
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 
@@ -21,6 +21,7 @@ define Package/luci-app-mosdns
 	PKG_MAINTAINER:=<https://github.com/dogbutcat/openwrt-packages>
 	PKGARCH:=all
 	DEPENDS:= \
+		+luci-base \
 		+MosDNS \
 		+!wget&&!curl:wget
 endef
