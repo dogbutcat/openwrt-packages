@@ -7,7 +7,7 @@ include $(TOPDIR)/rules.mk
 
 PKG_NAME:=luci-app-mosdns
 PKG_VERSION:=1.0.7
-PKG_RELEASE:=11
+PKG_RELEASE:=12
 
 PKG_BUILD_DIR:=$(BUILD_DIR)/$(PKG_NAME)
 

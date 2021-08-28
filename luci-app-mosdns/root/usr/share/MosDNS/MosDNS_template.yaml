@@ -71,7 +71,7 @@ plugin:
 
         - 'forward_remote'
         - if:
-            - !_response_rcode_success
+            - '!_response_rcode_success'
           exec:
             - 'forward_google'
 
