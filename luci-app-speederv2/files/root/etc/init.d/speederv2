@@ -78,29 +78,31 @@ start_instance() {
 	procd_append_param command -c
 	procd_append_param command -r ${server_ip}:${server_port}
 	procd_append_param command -l ${listen_ip}:${listen_port} && _log "info" "listening on: ${listen_ip}:${listen_port}"
-	[ -n "$key" ] && procd_append_param command --key ${key}
+	[ -n "$key" ] && procd_append_param command -k ${key}
 	[ -n "$fec_str" ] && procd_append_param command --fec ${fec_str} && _log "info" "FEC: ${fec_str}"
 	[ -n "$fec_timeout" ] && procd_append_param command --timeout ${fec_timeout} && _log "info" "timeout: ${fec_timeout}"
 	[ -n "$report" ] && procd_append_param command --report ${report}
 	[ -n "$fec_mode" ] && procd_append_param command --mode ${fec_mode} && _log "info" "mode: ${fec_mode}"
 	[ -n "$fec_mtu" ] && procd_append_param command --mtu ${fec_mtu} && _log "info" "MTU: ${fec_mtu}"
-	[ -n "$fec_quene_len" ] && procd_append_param command --quene-len ${fec_quene_len}
-	[ -n "$jitter" ] && procd_append_param command --jitter ${jitter}
-	[ -n "$interval" ] && procd_append_param command --interval ${interval}
-	[ -n "$random_drop" ] && procd_append_param command --random-drop ${random_drop}
-	[ -n "$disable_obscure" ] && procd_append_param command --disable-obscure ${disable_obscure}
-	[ -n "$fifo" ] && procd_append_param command --fifo ${fifo}
-	[ -n "$decode_buf" ] && procd_append_param command --decode-buf${decode_buf}
-	[ -n "$fix_latency" ] && procd_append_param command --fix-latency ${fix_latency}
-	[ -n "$delay_capacity" ] && procd_append_param command --delay-capacity ${delay_capacity}
-	[ -n "$disable_fec" ] && procd_append_param command --disable-fec ${disable_fec}
-	[ -n "$sock_buf" ] && procd_append_param command --sock-buf ${sock_buf}
-	[ -n "$log_level" ] && procd_append_param command --log-level ${log_level}
-	[ -n "$log_position" ] && procd_append_param command --log-position ${log_position}
-	[ "$disable_color"  == "1" ] && procd_append_param command --disable-color
+	[ -n "$fec_quene_len" ] && procd_append_param command --quene-len ${fec_quene_len} && _log "info" "quene-len ${fec_quene_len}"
+	[ -n "$jitter" ] && procd_append_param command --jitter ${jitter} && _log "info" "jitter ${jitter}"
+	[ -n "$interval" ] && procd_append_param command --interval ${interval} && _log "info" "interval ${interval}"
+	[ -n "$random_drop" ] && procd_append_param command --random-drop ${random_drop} && _log "info" "random-drop ${random_drop}"
+	[ -n "$disable_obscure" ] && procd_append_param command --disable-obscure ${disable_obscure} && _log "info" "disable-obscure ${disable_obscure}"
+	[ -n "$fifo" ] && procd_append_param command --fifo ${fifo} && _log "info" "fifo ${fifo}"
+	[ -n "$decode_buf" ] && procd_append_param command --decode-buf${decode_buf} && _log "info" "decode-buf ${decode_buf}"
+	[ -n "$fix_latency" ] && procd_append_param command --fix-latency ${fix_latency} && _log "info" "fix-latency ${fix_latency}"
+	[ -n "$delay_capacity" ] && procd_append_param command --delay-capacity ${delay_capacity} && _log "info" "delay-capacity ${delay_capacity}"
+	[ -n "$disable_fec" ] && procd_append_param command --disable-fec ${disable_fec} && _log "info" "disable-fec ${disable_fec}"
+	[ -n "$sock_buf" ] && procd_append_param command --sock-buf ${sock_buf} && _log "info" "sock-buf ${sock_buf}"
+	[ -n "$log_level" ] && procd_append_param command --log-level ${log_level} && _log "info" "log-level ${log_level}"
+	[ -n "$log_position" ] && procd_append_param command --log-position ${log_position} && _log "info" "log-position ${log_position}"
+	[ "$disable_color"  == "1" ] && procd_append_param command --disable-color && _log "info" "jitter ${jitter}"
 	procd_set_param respawn
 	[ -n "$daemon_user" ] && procd_set_param user "$daemon_user" && _log "info" "running from ${daemon_user} user"
 	procd_set_param pidfile "/var/run/${NAME}.${server}.pid"
+	# procd_set_param stderr 1
+	# procd_set_param stdout 1
 	procd_close_instance
 }
 
