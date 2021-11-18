@@ -5,9 +5,9 @@ log:
 library: []
 plugin:
   - tag: 'encrypt_dns'
-    type: pipeline
+    type: sequence
     args:
-      pipe:
+      exec:
         - 'check_black_list'
 
   ################ 序列 #################
@@ -27,8 +27,9 @@ plugin:
     type: sequence
     args:
       exec:
-        - if:
+        - if_and:
             - 'match_exclude_domain'
+            - '!match_non_local_domain'
           exec:
             - 'sequence_local' # goto local plugin
             - _end
@@ -38,42 +39,37 @@ plugin:
     type: sequence
     args:
       exec:
+        - primary:
+            - 'forward_remote'
+          secondary:
+            - 'forward_google'
+          stat_length: 10   # 常规 fallback 统计长度。默认 0，禁用常规 fallback。可省略。
+          threshold: 5      # 常规 fallback 触发阈值。不可大于统计长度。默认 0。可省略。
+          fast_fallback: 200    # 快速 fallback 触发阈值。单位: 毫秒。默认: 0，禁用快速 fallback。可省略。
+          always_standby: true # 快速 fallback secondary 始终待命。可省略。
         - if:
-            - 'match_non_local_domain'
+            - _response_rcode_success
           exec:
-            - primary:
-                - 'forward_remote'
-              secondary:
-                - 'forward_google'
-              stat_length: 10   # 常规 fallback 统计长度。默认 0，禁用常规 fallback。可省略。
-              threshold: 5      # 常规 fallback 触发阈值。不可大于统计长度。默认 0。可省略。
-              fast_fallback: 200    # 快速 fallback 触发阈值。单位: 毫秒。默认: 0，禁用快速 fallback。可省略。
-              always_standby: true # 快速 fallback secondary 始终待命。可省略。
-            - if:
-                - _response_rcode_success
-              exec:
-                - _end
-        - 'sequence_local'
+            - _end
+          else_exec:
+            - sequence_local
 
   - tag: 'sequence_local'    # 分流路由
     type: sequence
     args:
       exec:
         - parallel:
-          - - 'forward_local'
+          - - 'forward_ali'
           - - 'forward_114'
-          - - 'ecs_manual'
             - 'forward_freenom'
-        - if:
-            - _response_rcode_success
-          exec:
-            - _end
-
-        - 'forward_remote'
         - if:
             - '!_response_rcode_success'
           exec:
-            - 'forward_google'
+            - 'forward_remote'
+            - if:
+                - '!_response_rcode_success'
+              exec:
+                - 'forward_google'
 
   ################ 查询过滤器 #################
 
@@ -105,14 +101,12 @@ plugin:
 
   ################# 响应过滤器 ################
 
-  - tag: 'match_local_ip'       # 匹配本地 IP
+  - tag: 'match_ipv4'       # 匹配本地 IP
     type: response_matcher
     args:
-      rcode: [1, 2, 3]
+      rcode: [0]
       ip:
-        - "ext:./geoip.dat:cn"
-      cname:
-        - 'ext:./geosite.dat:cn'
+        - "0.0.0.0/0"
       # logical_and: false
 
   - tag: 'ecs_manual'
@@ -125,6 +119,9 @@ plugin:
       force_overwrite: false  # 如果请求已有 ECS，是否强制覆盖。
       # mask4: 24               # 用于 ipv4 地址的掩码。默认: 24。
       # mask6: 48               # 用于 ipv6 地址的掩码。默认: 48。
+
+  - tag: 'dedup'
+    type: 'single_flight'
 
   ################# 功能性插件 ################
 
@@ -140,7 +137,7 @@ plugin:
       # Unix 连接: `unix://<user>:<password>@</path/to/redis.sock>?db=<db_number>`
       # redis: 'redis://localhost:6379/0'
 
-  - tag: 'forward_local' # 转发至本地服务器
+  - tag: 'forward_ali' # 转发至本地服务器
     type: forward
     args:
       upstream:
@@ -150,7 +147,6 @@ plugin:
         - '114.114.114.114'
       timeout: 5          # 请求超时时间，单位: 秒。
       fastest_ip: false   # 最快 IP 模式。测试所有解析到的 IP 的延时，仅返回延时最低的。(注意: 启用这个功能会导致 DNS 响应时间变长。)
-      deduplicate: false  # 是否请求去重。mosdns 的移植功能，说明详见 `fast_forward` 插件。
       insecure_skip_verify: false  # 禁用 TLS 身份验证。
 
   - tag: 'forward_114' # 转发至本地服务器
@@ -181,7 +177,6 @@ plugin:
           # max_conns: 200
           # insecure_skip_verify: false    # 禁用 TLS 验证。适用于 DoT，DoH 协议。
       timeout: 5          # 请求超时时间。单位: 秒。默认 5。
-      deduplicate: false  # 是否请求去重。
       ca: [ ]             # 用于 TLS 验证的 CA 证书路径。是数组，可填入多个证书。为空默认使用系统证书池。
 
   - tag: 'forward_google'
@@ -195,7 +190,6 @@ plugin:
           idle_timeout: 10
           # max_conns: 100       # 最大连接数。适用于 TCP，DoT，DoH 协议。默认: 1。一般不需要改。
           # insecure_skip_verify: false    # 禁用 TLS 验证。适用于 DoT，DoH 协议。
-      deduplicate: false  # 是否请求去重。
       ca: [ ]             # 用于 TLS 验证的 CA 证书路径。是数组，可填入多个证书。为空默认使用系统证书池。
 
   ################# 启动服务器 ################
@@ -204,6 +198,8 @@ plugin:
     type: 'server'
     args:
       entry:
+        - 'ecs_manual'
+        - 'dedup'
         - 'cache'
         - 'encrypt_dns'
       max_concurrent_queries: 0  # 插件最大并发处理请求数。默认 0 代表无限制。

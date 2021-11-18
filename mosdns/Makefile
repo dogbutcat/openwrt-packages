@@ -9,8 +9,8 @@
 include $(TOPDIR)/rules.mk
 
 PKG_NAME:=MosDNS
-PKG_VERSION:=v1.8.6
-PKG_RELEASE:=2
+PKG_VERSION:=v2.1.2
+PKG_RELEASE:=3
 
 include $(INCLUDE_DIR)/package.mk
 
@@ -36,7 +36,7 @@ endif
 
 ifeq ($(ARCH),x86_64)
 	PKG_ARCH_MOSDNS:=amd64
-	PKG_HASH:=006d0567250d22dc702939a253bb043960d3a8f6dcc661c7901f07dda2a962b8
+	PKG_HASH:=c1cafb32a2096d071cb231acd3b7ed00debb18700c5317555ba8c065c1bad266
 endif
 
 ifeq ($(ARCH),mips64el)
@@ -46,12 +46,12 @@ endif
 
 ifeq ($(ARCH),mipsel)
 	PKG_ARCH_MOSDNS:=mipsle-softfloat
-	PKG_HASH:=e0d3e7694b183834080cbc19f507636ccc15a68fe07a5c4a2544afbc3ae1a644
+	PKG_HASH:=c9de4ee0e8cfb1c61238865aa6016c851e52dabe6c3e65523b2950a2e4670759
 endif
 
 ifeq ($(ARCH),mips)
 	PKG_ARCH_MOSDNS:=mipsle-softfloat
-	PKG_HASH:=e0d3e7694b183834080cbc19f507636ccc15a68fe07a5c4a2544afbc3ae1a644
+	PKG_HASH:=c9de4ee0e8cfb1c61238865aa6016c851e52dabe6c3e65523b2950a2e4670759
 endif
 
 ifeq ($(ARCH),arm)
