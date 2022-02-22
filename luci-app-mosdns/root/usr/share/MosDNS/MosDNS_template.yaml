@@ -4,15 +4,10 @@ log:
   file: ""
 library: []
 plugin:
-  - tag: 'encrypt_dns'
-    type: sequence
-    args:
-      exec:
-        - 'check_black_list'
 
   ################ 序列 #################
 
-  - tag: 'check_black_list'
+  - tag: 'encrypt_dns'
     type: sequence
     args:
       exec:
@@ -20,19 +15,20 @@ plugin:
             - 'match_ad_domain'
           exec:
             - _block_with_nxdomain
-            - _end
+            - '_return'
         - 'sequence_exclude_domain'
 
   - tag: 'sequence_exclude_domain'
     type: sequence
     args:
       exec:
-        - if_and:
+        - 'cache'
+        - if:
             - 'match_exclude_domain'
             - '!match_non_local_domain'
           exec:
             - 'sequence_local' # goto local plugin
-            - _end
+            - '_return'
         - 'sequence_remote'
 
   - tag: 'sequence_remote'    # 分流路由
@@ -50,7 +46,7 @@ plugin:
         - if:
             - _response_rcode_success
           exec:
-            - _end
+            - '_return'
           else_exec:
             - sequence_local
 
@@ -61,7 +57,7 @@ plugin:
         - parallel:
           - - 'forward_ali'
           - - 'forward_114'
-            - 'forward_freenom'
+            - 'forward_119'
         - if:
             - '!_response_rcode_success'
           exec:
@@ -129,7 +125,6 @@ plugin:
     type: cache
     args:
       size: 1024 
-      cleaner_interval: 120
       # redis 外部缓存地址。
       # 如果非空，将使用 redis 作为缓存。上面的参数将不会有用。
       # 缓存大小，清除方式等，全部由 redis 控制。需在 redis 里设置。
@@ -156,12 +151,12 @@ plugin:
       upstream:
         - addr: "tcp://114.114.114.114"
 
-  - tag: 'forward_freenom' # 转发至本地服务器
+  - tag: 'forward_119' # 转发至本地服务器
     type: forward
     args:
       timeout: 10
       upstream:
-        - addr: "tcp://80.80.80.80"
+        - addr: "119.29.29.29"
           # ip_addr: "80.80.80.80"
 
   - tag: 'forward_remote' # 转发至远程服务器
@@ -176,13 +171,11 @@ plugin:
           idle_timeout: 10
           # max_conns: 200
           # insecure_skip_verify: false    # 禁用 TLS 验证。适用于 DoT，DoH 协议。
-      timeout: 5          # 请求超时时间。单位: 秒。默认 5。
       ca: [ ]             # 用于 TLS 验证的 CA 证书路径。是数组，可填入多个证书。为空默认使用系统证书池。
 
   - tag: 'forward_google'
     type: fast_forward
     args:
-      timeout: 5
       upstream:
         - addr: 'https://dns.google/dns-query'  # 必需。服务器地址。
           dial_addr: '8.8.8.8:443'
@@ -200,7 +193,6 @@ plugin:
       entry:
         - 'ecs_manual'
         - 'dedup'
-        - 'cache'
         - 'encrypt_dns'
       max_concurrent_queries: 0  # 插件最大并发处理请求数。默认 0 代表无限制。
       server:
