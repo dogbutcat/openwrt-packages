@@ -36,7 +36,7 @@ endif
 
 ifeq ($(ARCH),x86_64)
 	PKG_ARCH_MOSDNS:=amd64
-	PKG_HASH:=599482ffe4420e601e75998f90ddb5581ab6a7cb20d8fa2d86d44351b3b2ebff
+	PKG_HASH:=skip
 endif
 
 ifeq ($(ARCH),mips64el)
@@ -46,12 +46,12 @@ endif
 
 ifeq ($(ARCH),mipsel)
 	PKG_ARCH_MOSDNS:=mipsle-softfloat
-	PKG_HASH:=0822708e7ac8ead47c538164ccd40f0fbaa55daf91143826e4328357496fc6c5
+	PKG_HASH:=skip
 endif
 
 ifeq ($(ARCH),mips)
 	PKG_ARCH_MOSDNS:=mipsle-softfloat
-	PKG_HASH:=0822708e7ac8ead47c538164ccd40f0fbaa55daf91143826e4328357496fc6c5
+	PKG_HASH:=skip
 endif
 
 ifeq ($(ARCH),arm)
